@@ -1,5 +1,5 @@
 int irSensor = 3;
-bool isValue = HIGH;
+bool isObjectDetected = HIGH;
 
 void setup() {
   Serial.begin(9600);
@@ -7,9 +7,9 @@ void setup() {
 }
 
 void loop() {
-  isValue = digitalRead(irSensor);
-  Serial.println(isValue);
-  if(isValue == LOW){
+  isObjectDetected = digitalRead(irSensor);
+  Serial.println(isObjectDetected);
+  if(isObjectDetected == LOW){
     Serial.println("Object is detected"); //pas sur ligne noir
   }
   else{
