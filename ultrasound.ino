@@ -26,4 +26,4 @@ void loop() {
   Serial.print("temps: ");
   Serial.println(duration);
  
-  delay(500);
+  delay(500);}
