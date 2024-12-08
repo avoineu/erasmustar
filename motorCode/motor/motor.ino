@@ -2,8 +2,8 @@
 #include <Adafruit_MotorShield.h>
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *motorLeft = AFMS.getMotor(3);  // connected to M2
-Adafruit_DCMotor *motorRight = AFMS.getMotor(2); // connected to M1
+Adafruit_DCMotor motorLeft = AFMS.getMotor(3);  // connected to M2
+Adafruit_DCMotormotorRight = AFMS.getMotor(2); // connected to M1
 
 void setup() {
   AFMS.begin(); 
