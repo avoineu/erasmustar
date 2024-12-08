@@ -1,13 +1,29 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
+// Ultrasound sensor pins
+const int trigPin = 14;  
+const int echoPin = 15;  
+const float SPEED_OF_SOUND_CM_PER_US = 0.0343; // sound speed in cm/µs
+
+// Infrared sensor pin and variables
+int irSensor = 3;
+bool isObjectDetected = HIGH;
+
+// Motor setup
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor motorLeft = AFMS.getMotor(3);  // connected to M2
-Adafruit_DCMotormotorRight = AFMS.getMotor(2); // connected to M1
+Adafruit_DCMotor *motorLeft = AFMS.getMotor(3);  // connected to M2
+Adafruit_DCMotor *motorRight = AFMS.getMotor(2); // connected to M1
 
 void setup() {
+
   AFMS.begin(); 
-  Serial.begin(9600); 
+
+  Serial.begin(9600);
+
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(irSensor, INPUT);
 }
 
 void forward(int speed) {
@@ -66,7 +82,40 @@ void turnRightWithRadius(int leftSpeed, int rightSpeed) {
   motorRight->setSpeed(rightSpeed);
 }
 
+bool checkInfraredSensor() {
+  bool isObjectDetected = digitalRead(irSensor) == LOW;
+  Serial.println(isObjectDetected);
+  if (isObjectDetected) {
+    Serial.println("Object is detected"); // not on black line
+  } else {
+    Serial.println("Object not detected"); // on black line
+  }
+  return isObjectDetected;
+}
+
+float measureDistance() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  long duration = pulseIn(echoPin, HIGH);
+  float distance = (duration * SPEED_OF_SOUND_CM_PER_US) / 2;
+  Serial.println("Distance: " + String(distance) + " cm temps: " + String(duration));
+
+  return distance;
+}
+
 void loop() {
+  // Ultrasound sensor measurement
+  float distance = measureDistance();
+
+  // Infrared sensor measurement
+  bool objectDetected = checkInfraredSensor();
+  Serial.println(objectDetected);
+
+  // Motor control logic
   forward(150);
   delay(2000);
 
@@ -87,4 +136,6 @@ void loop() {
 
   stop();
   delay(2000);
+
+  delay(500);
 }
